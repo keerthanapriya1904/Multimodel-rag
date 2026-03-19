@@ -199,7 +199,7 @@ print(f" Embeddings shape: {embeddings.shape}")
 # Step 3: Store
 print("\n Storing in ChromaDB...")
 client = chromadb.PersistentClient(
-    path="./chroma_db_day8"
+    path="./chroma_db_day7"
 )
 collection = client.get_or_create_collection(
     name="bank_security_pdf",
