@@ -2,6 +2,29 @@ venv/
 .env
 __pycache__/
 *.pyc
-.DS_Store
+
 chroma_db/
 *.egg-info/
+temp_p*.png
+*.sqlite
+rag_users.db
+src/chroma_db_day*/
+
+
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# OS
+.DS_Store
+
+# Logs
+*.log
+
+data/uploads/
+data/images/
+src/temp_images/
+
+src/models/
