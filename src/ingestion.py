@@ -6,9 +6,9 @@ from bs4 import BeautifulSoup
 import fitz  # PyMuPDF
 from sentence_transformers import SentenceTransformer
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from config import get_clean_name
+from src.config import get_clean_name
 # ── Master Cloud Connection ──
-from vector_service import save_to_qdrant, search_qdrant
+from src.vector_service import save_to_qdrant, search_qdrant
 
 # Fix directory paths
 sys.path.append(os.path.dirname(__file__))

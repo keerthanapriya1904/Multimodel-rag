@@ -1,7 +1,7 @@
 import uuid
 import os
 import qdrant_client
-from config import QDRANT_URL, QDRANT_API_KEY
+from src.config import QDRANT_URL, QDRANT_API_KEY
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
 
@@ -101,7 +101,7 @@ def search_qdrant(query_vector, user_id, limit=5):
         "score": r.score
     } for r in results.points]
 
-from config import get_clean_name
+from src.config import get_clean_name
 
 def purge_file_vectors(filename: str, user_id: str):
     client = get_qdrant()

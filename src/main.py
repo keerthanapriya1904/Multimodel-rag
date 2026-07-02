@@ -11,26 +11,25 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
-from ingestion import get_embed_model
-from reranker import get_reranker
+from src.ingestion import get_embed_model
+from src.reranker import get_reranker
 
-# ─────────────────────────────────────────────
+
 # Logging
-# ─────────────────────────────────────────────
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(message)s"
 )
 logger = logging.getLogger(__name__)
 
-# ─────────────────────────────────────────────
+
 # Rate Limiter
-# ─────────────────────────────────────────────
+
 limiter = Limiter(key_func=get_remote_address)
 
-# ─────────────────────────────────────────────
+
 # FastAPI App
-# ─────────────────────────────────────────────
 app = FastAPI(
     title="DocMind — Multimodal RAG System",
     version="2.0.0",
@@ -40,9 +39,9 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# ─────────────────────────────────────────────
+
 # CORS (React Frontend Support)
-# ─────────────────────────────────────────────
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -55,9 +54,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ─────────────────────────────────────────────
+
 # Startup (Load heavy models once)
-# ─────────────────────────────────────────────
+
 @app.on_event("startup")
 async def startup_event():
     logger.info("Starting DocMind backend...")
@@ -96,9 +95,9 @@ app.include_router(auth_router)
 app.include_router(upload_router)
 app.include_router(query_router)
 
-# ─────────────────────────────────────────────
+
 # Voice Router (optional safe import)
-# ─────────────────────────────────────────────
+
 try:
     from voice_input import router as voice_router
     app.include_router(voice_router)
@@ -106,9 +105,9 @@ try:
 except ImportError:
     logger.warning("Voice feature disabled (voice_input not found)")
 
-# ─────────────────────────────────────────────
+
 # Health Check Routes
-# ─────────────────────────────────────────────
+
 @app.get("/")
 def root():
     return {
@@ -124,6 +123,3 @@ def health():
         "version": "2.0.0"
     }
 
-# ─────────────────────────────────────────────
-# Entry Point (IMPORTANT FOR RENDER)
-# ─────────────────────────────────────────────
