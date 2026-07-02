@@ -42,7 +42,7 @@ async def upload_file(
         print(f"[DB] checking if {filename_to_check} already exists in the vault")
         purge_file_vectors(cloud_identity, current_user.id)
     except Exception as e:
-        pass
+        print(f"[WARNING] Cleanup skipped: {e}")
     
     # 3. TEXT & TABLE Ingestion (Syncs to Sydney)
     

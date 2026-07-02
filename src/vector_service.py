@@ -106,25 +106,40 @@ from src.config import get_clean_name
 def purge_file_vectors(filename: str, user_id: str):
     client = get_qdrant()
     collection_name = f"user_{user_id}"
-    
-    # ── THE FIX: Clean the incoming name before searching ──
+
     clean_filename = get_clean_name(filename)
-    
-    print(f"Delete collection : {collection_name}")
+
+    print(f"[CLEANUP] Checking collection: {collection_name}")
+
+    # Check whether the collection exists
+    collections = client.get_collections().collections
+    if not any(c.name == collection_name for c in collections):
+        print(f"[CLEANUP] Collection '{collection_name}' does not exist. Skipping cleanup.")
+        return
+
     try:
         client.delete(
             collection_name=collection_name,
             points_selector=models.FilterSelector(
                 filter=models.Filter(
                     must=[
-                        # This now matches the 'clean' name stored in metadata
-                        models.FieldCondition(key="source", match=models.MatchValue(value=clean_filename)),
-                        models.FieldCondition(key="user_id", match=models.MatchValue(value=str(user_id)))
+                        models.FieldCondition(
+                            key="source",
+                            match=models.MatchValue(value=clean_filename)
+                        ),
+                        models.FieldCondition(
+                            key="user_id",
+                            match=models.MatchValue(value=str(user_id))
+                        ),
                     ]
                 )
-            )
+            ),
+            wait=True,
         )
-        print(f"  [CLEANUP] Purged vectors for sanitized name: {clean_filename}")
+
+        print(f"[CLEANUP] Purged vectors for: {clean_filename}")
+
     except Exception as e:
-        print(repr(e))
-        raise
+        print(f"[CLEANUP] Delete failed: {e}")
+        # Don't raise the exception.
+        # Upload can continue and save_to_qdrant() will create the collection if needed.

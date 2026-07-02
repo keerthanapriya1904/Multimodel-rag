@@ -77,7 +77,6 @@ def chunk_pages(pages: list) -> list:
             chunks.append({
                 "text": chunk,
                 "page": page["page_num"],
-                "source": master_id,
                 "chunk_id": str(uuid.uuid4())
             })
             
@@ -85,7 +84,7 @@ def chunk_pages(pages: list) -> list:
 
 # ── 4. MASTER INGESTION (Qdrant Sydney Cloud) ──
 # 
-from config import get_clean_name
+from src.config import get_clean_name
 
 def ingest_document(file_path: str, user_id: str ) -> dict:
     """
