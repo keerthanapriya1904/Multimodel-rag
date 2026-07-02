@@ -127,18 +127,3 @@ def health():
 # ─────────────────────────────────────────────
 # Entry Point (IMPORTANT FOR RENDER)
 # ─────────────────────────────────────────────
-if __name__ == "__main__":
-    import uvicorn
-
-    # Render assigns dynamic port
-    port = int(os.environ.get("PORT", 8000))
-
-    os.makedirs("./data/uploads", exist_ok=True)
-    os.makedirs("./data/images", exist_ok=True)
-
-    uvicorn.run(
-        "main:app",
-        host="0.0.0.0",
-        port=port,
-        reload=False
-    )
