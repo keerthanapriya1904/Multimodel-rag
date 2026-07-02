@@ -51,6 +51,10 @@ def register(req: RegisterRequest, db: Session = Depends(get_db)):
         db.add(user)
         db.commit()
         db.refresh(user)
+        print("REGISTER SUCCESS")
+        print("Username:", user.username)
+        print("Email:", user.email)
+        print("Password Hash:", user.password_hash)
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail="User creation failed")
@@ -62,18 +66,41 @@ def register(req: RegisterRequest, db: Session = Depends(get_db)):
 # ── Login ────
 @router.post("/login")
 def login(req: LoginRequest, db: Session = Depends(get_db)):
-    """Login with username + password. Returns JWT token."""
+    print("LOGIN REQUEST")
+    print("Username entered:", req.username)
+
+    users = db.query(User).all()
+
+    print("Total users:", len(users))
+
+    for u in users:
+        print(f"DB User -> {u.username} | {u.email}" )
+
     user = db.query(User).filter(User.username == req.username).first()
 
-    # Generic error message to avoid username enumeration
-    if not user or not verify_password(req.password, user.password_hash):
-        raise HTTPException(status_code=401,
-                            detail="Invalid credentials")
+    if user is None:
+        print("User NOT FOUND")
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    print("User found:", user.username)
+    print("Stored hash:", user.password_hash)
+
+    valid = verify_password(req.password, user.password_hash)
+
+    print("Password verification:", valid)
+   
+
+    if not valid:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
 
     token = create_token(user.id)
-    return {"message": "Login successful", "token": token,
-            "user_id": user.id, "username": user.username}
 
+    return {
+        "message": "Login successful",
+        "token": token,
+        "user_id": user.id,
+        "username": user.username,
+    }
 # ── Auth dependency ──
 def get_current_user(
     token: str = Depends(oauth2_scheme),

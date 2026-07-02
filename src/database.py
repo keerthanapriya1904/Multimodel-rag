@@ -69,7 +69,12 @@ class User(Base):
 # ── 2. DATABASE CONNECTION ────────────────────────────────────
 # SQLite file stored in project root
 # check_same_thread=False needed for FastAPI async requests
-DB_URL = "sqlite:///./rag_users.db"
+import os
+
+DB_PATH = os.path.join(os.path.dirname(__file__), "rag_users.db")
+DB_URL = f"sqlite:///{DB_PATH}"
+
+print("Database Path:", DB_PATH)
 
 engine = create_engine(
     DB_URL,
@@ -117,7 +122,7 @@ def get_db():
 
 # ── 4. CONSOLIDATED TEST BLOCK ────────────────────────────────
 if __name__ == "__main__":
-    print("=" * 50)
+
     print("DATABASE SYSTEM CHECK")
     print("=" * 50)
 
