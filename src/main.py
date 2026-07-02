@@ -1,5 +1,5 @@
-# src/main.py — Production Ready (Render + Vercel + FastAPI)
-# Run locally: uvicorn main:app --reload --port 8000
+# src/main.py  (Render + Vercel + FastAPI)
+# Run locally: uvicorn src.main:app --reload --port 8000
 
 import os
 import logging
@@ -60,22 +60,12 @@ app.add_middleware(
 @app.on_event("startup")
 async def startup_event():
     logger.info("Starting DocMind backend...")
+    logger.info("DocMind backend started successfully.")
+    logger.info("Models will be loaded on first use.")
 
-    try:
-        get_embed_model()
-        logger.info("Embedding model loaded")
 
-        get_reranker()
-        logger.info("Reranker loaded")
-
-        logger.info("System warmup complete ")
-
-    except Exception as e:
-        logger.error(f"Startup error: {e}")
-
-# ─────────────────────────────────────────────
 # Global Error Handler
-# ─────────────────────────────────────────────
+
 @app.exception_handler(Exception)
 async def global_error(request: Request, exc: Exception):
     logger.error(f"Unhandled error on {request.url}: {exc}")
@@ -84,9 +74,9 @@ async def global_error(request: Request, exc: Exception):
         content={"error": "Internal server error"}
     )
 
-# ─────────────────────────────────────────────
+
 # Routers
-# ─────────────────────────────────────────────
+
 from api.auth import router as auth_router
 from api.upload import router as upload_router
 from api.query import router as query_router
