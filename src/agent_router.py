@@ -19,14 +19,14 @@ def get_groq():
         _client = Groq(api_key=os.getenv("GROQ_API_KEY"))
     return _client
 
-# ── Tool definitions ──────────────────────────────────────────
+# ── Tool definitions 
 TOOLS = {
     "PDF_RETRIEVER":    "Search through uploaded PDF/DOCX/TXT documents for text-based answers",
     "WEB_SEARCH":       "Search the web for current information not in uploaded documents",
     "VISION_ANALYSIS":  "Retrieve and analyze images, charts, diagrams, or figures from documents",
 }
 
-# ── System prompt for tool selection ─────────────────────────
+# ── System prompt for tool selection 
 ROUTER_SYSTEM_PROMPT = """You are an intelligent query router for a document Q&A system.
 
 Your job is to analyze a user's question and decide which tool to use.
@@ -107,7 +107,7 @@ def agent_orchestrator(question: str,
     tool = select_tool(question)
     print(f"  [Agent] Selected tool: [{tool}]")
 
-    # ── Route to correct tool ─────────────────────────────────
+    # ── Route to correct tool 
     if tool == "VISION_ANALYSIS":
         from multimodal_rag import ask_multimodal
         result = ask_multimodal(

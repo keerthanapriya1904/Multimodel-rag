@@ -145,7 +145,7 @@ def ask_rag(question: str,
         messages.extend(chat_history[-6:])
     messages.append({"role": "user", "content": question})
 
-    # ── Step 5: Generate answer ──────────────────────────────
+    # ── Step 5: Generate answer ──
     if stream:
         def stream_gen():
             full_answer = ""
@@ -204,9 +204,9 @@ def ask_rag(question: str,
 
 # ── Test 
 if __name__ == "__main__":
-    print("=" * 50)
+   
     print("RAG PIPELINE TEST (with full Phase 4)")
-    print("=" * 50)
+    
 
     # Test 1: retrieve_chunks stages
     print("\nTest 1: retrieve_chunks() pipeline")

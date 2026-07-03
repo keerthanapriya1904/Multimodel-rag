@@ -21,7 +21,7 @@ JWT_SECRET     = os.getenv("JWT_SECRET", "change-this-secret-key-32-chars!!")
 
 # ── Embedding Models ────
 EMBED_MODEL         = "all-MiniLM-L6-v2"          # 384-dim, English
-MULTILINGUAL_MODEL  = "paraphrase-multilingual-MiniLM-L12-v2"  # 50+ languages
+
 
 # ── LLM ───
 LLM_MODEL    = "llama-3.1-8b-instant"

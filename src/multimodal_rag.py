@@ -21,7 +21,7 @@ def get_groq():
         _client = Groq(api_key=os.getenv("GROQ_API_KEY"))
     return _client
 
-# ── Detect if question needs images ──────────────────────────
+# ── Detect if question needs images 
 def needs_images(question: str) -> bool:
     """
     Simple keyword router.
@@ -35,7 +35,7 @@ def needs_images(question: str) -> bool:
     q_lower = question.lower()
     return any(kw in q_lower for kw in visual_keywords)
 
-# ── Build combined context ────────────────────────────────────
+# ── Build combined context 
 def build_multimodal_context(text_chunks: list,
                               image_results: list) -> str:
     context = ""
@@ -144,7 +144,7 @@ def ask_multimodal(
         "chunks_used":   len(text_chunks) + len(image_results)
     }
 
-# ── Test ──────────────────────────────────────────────────────
+# ── Test ────
 if __name__ == "__main__":
     print("=" * 50)
     print("MULTIMODAL RAG TEST")

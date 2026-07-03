@@ -164,7 +164,7 @@ def ingest_document(file_path: str, user_id: str) -> dict:
     }
 
 # ── 5. CLOUD RETRIEVAL ──
-def retrieve(question: str, user_id: str , n: int = 5) -> list:
+def retrieve(question: str, user_id: str , n: int = 8) -> list:
     """Fetches relevant chunks from Sydney Cloud Vault"""
     model = get_embed_model()
     q_vec = model.encode([question])[0].tolist()

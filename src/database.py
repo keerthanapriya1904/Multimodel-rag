@@ -13,7 +13,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-# ── 1. SCHEMA INITIALIZATION ──────────────────────────────────
+# ── 1. SCHEMA INITIALIZATION 
 Base = declarative_base()
 
 class User(Base):
@@ -70,7 +70,7 @@ class User(Base):
         return self.is_active is True
 
 
-# ── 2. DATABASE CONNECTION ────────────────────────────────────
+# ── 2. DATABASE CONNECTION 
 # SQLite file stored in project root
 # check_same_thread=False needed for FastAPI async requests
 
@@ -102,7 +102,7 @@ SessionLocal = sessionmaker(
 )
 
 
-# ── 3. FASTAPI DEPENDENCY ─────────────────────────────────────
+# ── 3. FASTAPI DEPENDENCY 
 def get_db():
     """
     FastAPI dependency — provides a database session to routes.
@@ -124,7 +124,7 @@ def get_db():
         db.close()      # ← always runs after route finishes
 
 
-# ── 4. CONSOLIDATED TEST BLOCK ────────────────────────────────
+# ── 4. CONSOLIDATED TEST BLOCK 
 if __name__ == "__main__":
 
     print("DATABASE SYSTEM CHECK")

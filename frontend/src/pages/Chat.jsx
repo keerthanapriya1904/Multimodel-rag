@@ -161,7 +161,7 @@ function renderInline(text) {
   return parts.length === 1 && typeof parts[0] === "string" ? parts[0] : parts
 }
 
-// ── Group conversations by date ───────────────────────────────
+// ── Group conversations by date ───
 function groupByDate(conversations) {
   const today     = new Date()
   const yesterday = new Date(today)
@@ -181,27 +181,27 @@ function groupByDate(conversations) {
   return Object.entries(groups).filter(([, v]) => v.length > 0)
 }
 
-// ── Main Chat Component ───────────────────────────────────────
+// ── Main Chat Component ──
 export default function Chat() {
-  // ── Messages & input ────────────────────────────────────────
+  // ── Messages & input ───
   const [messages,      setMessages]      = useState([])
   const [question,      setQuestion]      = useState("")
   const [loading,       setLoading]       = useState(false)
 
-  // ── Sidebar & UI ─────────────────────────────────────────────
+  // ── Sidebar & UI ───
   const [sidebarOpen,   setSidebarOpen]   = useState(true)
   const [showUpload,    setShowUpload]    = useState(false)
   const [documents,     setDocuments]     = useState([])
 
-  // ── Conversation history (localStorage) ─────────────────────
+  // ── Conversation history (localStorage) ───
   const [conversations, setConversations] = useState([])
   const [currentConvId, setCurrentConvId] = useState(null)
 
-  // ── Voice recording ──────────────────────────────────────────
+  // ── Voice recording ─────
   const [recording,     setRecording]     = useState(false)
   const [mediaRecorder, setMediaRecorder] = useState(null)
 
-  // ── Per-message feedback (copy / thumbs) ─────────────────────
+  // ── Per-message feedback (copy / thumbs) ─────
   const [feedback,      setFeedback]      = useState({})  // {msgIndex: "up"|"down"|"copied"}
 
   const bottomRef  = useRef(null)
@@ -210,18 +210,18 @@ export default function Chat() {
   const token      = localStorage.getItem("rag_token")
   const user       = JSON.parse(localStorage.getItem("rag_user") || "{}")
 
-  // ── Load on mount ────────────────────────────────────────────
+  // ── Load on mount ──
   useEffect(() => {
     loadDocuments()
     loadConversations()
   }, [])
 
-  // ── Auto scroll ──────────────────────────────────────────────
+  // ── Auto scroll ─────────────
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
 
-  // ── Save current conversation when messages change ───────────
+  // ── Save current conversation when messages change ───
   useEffect(() => {
     if (currentConvId && messages.length > 0) {
       saveCurrentConversation(messages)
@@ -235,7 +235,7 @@ export default function Chat() {
     } catch { setDocuments([]) }
   }
 
-  // ── Conversation history ─────────────────────────────────────
+  // ── Conversation history ─────
   // ZERO PERSISTENCE POLICY:
   // Only the conversation TITLE is stored in localStorage.
   // Message content (answers, document excerpts) is NEVER

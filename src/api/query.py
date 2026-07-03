@@ -1,4 +1,4 @@
-# src/api/query.py  —  Updated — Phase 2+
+# src/api/query.py 
 # CHANGES:
 #   1. Expanded sanitization layer (30+ injection patterns)
 #   2. Unicode control character stripping

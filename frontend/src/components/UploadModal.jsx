@@ -81,13 +81,7 @@ export default function UploadModal({ onClose, onUploaded }) {
     e.target.value = ""
   }
 
- /* const deleteDoc = async (filename) => {
-    try {
-      await api.delete(`/upload/${encodeURIComponent(filename)}`)
-      await loadDocuments()
-      if (onUploaded) onUploaded()
-    } catch { setError("Delete failed") }
-  } */
+
   const deleteDoc = async (filename) => {
     try {
         // This calls the backend route we just wrote

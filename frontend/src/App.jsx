@@ -7,7 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import Login from "./pages/Login.jsx"
 import Chat  from "./pages/Chat.jsx"
 
-// ── ProtectedRoute ────────────────────────────────────────────
+// ── ProtectedRoute ──
 // Redirects to /login if no JWT token found
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem("rag_token")

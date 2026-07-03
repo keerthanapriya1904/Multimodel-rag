@@ -26,9 +26,7 @@ def get_image_description(img: Image.Image) -> str:
     UNIVERSAL VISION ENGINE (GEMINI)
     Receives an in-memory PIL Image of a full PDF page.
     """
-    
-    
-    
+
     universal_prompt = (
         "ACT AS A MULTIMODAL DATA EXTRACTION EXPERT. You are looking at a full page of a document. "
         "Locate any Figures, Architecture Diagrams, Flowcharts, or Tables on this page and convert them "
@@ -75,7 +73,7 @@ def extract_images_from_pdf(pdf_path: str):
         if len(page.get_images()) > 0 or len(page.get_drawings()) > 0:
             
             # get_pixmap takes a "screenshot" of the page. 
-            # dpi=150 is crisp enough for AI but keeps the file size small.
+            # dpi=150 is  enough for AI but keeps the file size small.
             pix = page.get_pixmap(dpi=150)
             img_bytes = pix.tobytes("png")
             
