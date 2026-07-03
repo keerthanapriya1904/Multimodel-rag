@@ -113,3 +113,6 @@ def health():
         "version": "2.0.0"
     }
 
+@app.get("/ping")
+def ping():
+    return {"status": "ok"}
