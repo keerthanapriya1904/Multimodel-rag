@@ -30,50 +30,14 @@ def build_context(chunks: list) -> str:
     return ctx
 
 
-def retrieve_chunks(question: str,
-                    user_id: str,
-                    n_final: int = 3) -> list:
-    """
-    Full Phase 4 retrieval pipeline:
-    Stage 1 → Hybrid search (BM25 + Dense + RRF)  → top 10
-    Stage 2 → MMR diversity selection              → top 8
-    Stage 3 → Cross-encoder reranking              → top 3
+def retrieve_chunks(question: str, user_id: str, n_final: int = 5):
+    from ingestion import retrieve
 
-    Falls back gracefully if any stage fails.
-    """
-    # ── Stage 1: Hybrid BM25 + Dense search ──────────────────
-    try:
-        from hybrid_search import hybrid_search
-        candidates = hybrid_search(question,
-                                   user_id=user_id, n=10)
-        print(f"  [Hybrid] Retrieved {len(candidates)} candidates")
-    except Exception as e:
-        print(f"  [Hybrid] Error: {e} — using dense fallback")
-        from ingestion import retrieve
-        candidates = retrieve(question, user_id=user_id, n=10)
+    chunks = retrieve(question, user_id=user_id, n=n_final)
 
-    if not candidates:
-        return []
-
-    # ── Stage 2: MMR diversity selection ─────────────────────
-    try:
-        from mmr_retrieval import mmr_retrieval
-        diverse = mmr_retrieval(question,
-                                user_id=user_id, n=8)
-        if diverse:
-            print(f"  [MMR] Selected {len(diverse)} diverse chunks")
-        else:
-            diverse = candidates[:8]
-    except Exception as e:
-        print(f"  [MMR] Error: {e} — skipping MMR")
-        diverse = candidates[:8]
-
-    # ── Stage 3: Cross-encoder reranking ─────────────────────
-    
-        chunks = diverse[:n_final]
+    print(f"[Dense] Retrieved {len(chunks)} chunks")
 
     return chunks
-
 
 def ask_rag(question: str,
             user_id:  str ,
