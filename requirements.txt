@@ -25,3 +25,4 @@ requests
 faiss-cpu
 numpy
 duckduckgo-search
+psycopg2-binary==2.9.10

@@ -1,5 +1,9 @@
 import uuid
 from datetime import datetime, timezone
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 # FIX 1: Import declarative_base from sqlalchemy.orm (not ext.declarative)
 #         ext.declarative is DEPRECATED in SQLAlchemy 2.0+
 #         Your code used the old location which gives a DeprecationWarning
@@ -69,18 +73,18 @@ class User(Base):
 # ── 2. DATABASE CONNECTION ────────────────────────────────────
 # SQLite file stored in project root
 # check_same_thread=False needed for FastAPI async requests
-import os
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "rag_users.db")
-DB_URL = f"sqlite:///{DB_PATH}"
 
-print("Database Path:", DB_PATH)
+DB_URL = os.getenv("DATABASE_URL")
+
+if not DB_URL:
+    raise RuntimeError("DATABASE_URL not found in .env")
+
+print("Using PostgreSQL Database")
 
 engine = create_engine(
     DB_URL,
-    connect_args={"check_same_thread": False},
-    # FIX 3: echo=False in production
-    # Set echo=True only for debugging SQL queries
+    pool_pre_ping=True,
     echo=False
 )
 
@@ -130,7 +134,7 @@ if __name__ == "__main__":
     try:
         # ── Step 1: Verify connection + count users ────────────
         count = db.query(User).count()
-        print(f"\n   Database connected: rag_users.db")
+        print("\nDatabase connected: PostgreSQL (Supabase)")
         print(f"    Total users in DB: {count}")
 
         # ── Step 2: Check indexes exist ───────────────────────
@@ -184,7 +188,7 @@ if __name__ == "__main__":
             print(f"    User not found (create it first)")
 
     except Exception as e:
-        print(f"\n  [✗] System check failed: {e}")
+        print(f"\n   System check failed: {e}")
         db.rollback()
     finally:
         db.close()
