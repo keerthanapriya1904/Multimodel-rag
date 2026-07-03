@@ -69,12 +69,7 @@ def retrieve_chunks(question: str,
         diverse = candidates[:8]
 
     # ── Stage 3: Cross-encoder reranking ─────────────────────
-    try:
-        from reranker import rerank
-        chunks = rerank(question, diverse, top_k=n_final)
-        print(f"  [Rerank] Final {len(chunks)} chunks selected")
-    except Exception as e:
-        print(f"  [Rerank] Error: {e} — using top {n_final}")
+    
         chunks = diverse[:n_final]
 
     return chunks
