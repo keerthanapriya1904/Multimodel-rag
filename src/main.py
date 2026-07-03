@@ -47,7 +47,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "http://localhost:3000",
-        "https://your-frontend.vercel.app"  #  replace after deployment
+        "https://multimodel-rag-seven.vercel.app"  #  replace after deployment
     ],
     allow_credentials=True,
     allow_methods=["*"],
