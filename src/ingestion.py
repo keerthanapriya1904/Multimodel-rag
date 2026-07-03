@@ -82,53 +82,85 @@ def chunk_pages(pages: list) -> list:
             
     return chunks
 
-# ── 4. MASTER INGESTION (Qdrant Sydney Cloud) ──
-# 
-from src.config import get_clean_name
+# ── 4.  INGESTION (Qdrant Sydney Cloud) ──
+def ingest_document(file_path: str, user_id: str) -> dict:
+    """
+    Process-and-Purge Pipeline (Memory Optimized)
 
-def ingest_document(file_path: str, user_id: str ) -> dict:
+    Extract -> Chunk -> Encode in batches -> Upload each batch to Qdrant
     """
-    The 'Process-and-Purge' Pipeline:
-    Extract -> Chunk -> Embed -> Sydney Sync
-    """
-    # --- NEW: Get the Clean Name immediately ---
-    raw_filename= os.path.basename(file_path)
+
+    raw_filename = os.path.basename(file_path)
     master_id = get_clean_name(raw_filename)
-   
+
     print(f"  [SYSTEM] Ingesting: {master_id}")
+
     ext = file_path.split(".")[-1].lower()
 
-    if   ext == "pdf":  pages = extract_pdf(file_path)
-    elif ext == "docx": pages = extract_docx(file_path)
-    elif ext == "txt":  pages = extract_txt(file_path)
-    elif file_path.startswith("http"): pages = extract_url(file_path)
-    else: return {"error": f"Unsupported format: {ext}"}
+    if ext == "pdf":
+        pages = extract_pdf(file_path)
+    elif ext == "docx":
+        pages = extract_docx(file_path)
+    elif ext == "txt":
+        pages = extract_txt(file_path)
+    elif file_path.startswith("http"):
+        pages = extract_url(file_path)
+    else:
+        return {"error": f"Unsupported format: {ext}"}
 
-    if not pages: return {"error": "Extraction failed"}
+    if not pages:
+        return {"error": "Extraction failed"}
 
     chunks = chunk_pages(pages)
-    if not chunks: return {"error": "No meaningful chunks created"}
 
-    # Generate mathematical vectors
-    print(f"  [SYSTEM] Generating vectors for {len(chunks)} chunks...")
+    if not chunks:
+        return {"error": "No meaningful chunks created"}
+
+    print(f"  [SYSTEM] Processing {len(chunks)} chunks...")
+
     model = get_embed_model()
-    embeddings = model.encode([c["text"] for c in chunks], show_progress_bar=False)
 
-    for i, c in enumerate(chunks):
-        c["vector"] = embeddings[i].tolist()
-        c["type"] = "text_content"
-        # --- NEW: Overwrite the source in chunk metadata with the clean name ---
-        c["source"] = master_id 
-        # -----------------------------------------------------------------------
+    # -------- Memory Optimized Batch Processing --------
+    EMBED_BATCH_SIZE = 8     # Try 8 if Render still runs out of memory
 
-    # SYNC TO CLOUD (Now uses the clean name in metadata)
-    save_to_qdrant(chunks, user_id)
+    for start in range(0, len(chunks), EMBED_BATCH_SIZE):
+
+        batch = chunks[start:start + EMBED_BATCH_SIZE]
+
+        print(
+            f"  [SYSTEM] Encoding batch "
+            f"{start//EMBED_BATCH_SIZE + 1}/"
+            f"{(len(chunks)-1)//EMBED_BATCH_SIZE + 1}"
+        )
+
+        embeddings = model.encode(
+            [c["text"] for c in batch],
+            batch_size=EMBED_BATCH_SIZE,
+            show_progress_bar=False
+        )
+
+        upload_batch = []
+
+        for i, chunk in enumerate(batch):
+            chunk["vector"] = embeddings[i].tolist()
+            chunk["type"] = "text_content"
+            chunk["source"] = master_id
+
+            upload_batch.append(chunk)
+
+        save_to_qdrant(upload_batch, user_id)
+
+        # Free memory immediately
+        del embeddings
+        del upload_batch
+
+    print("  [SYSTEM] Upload completed.")
 
     return {
-        "status": "success", 
+        "status": "success",
         "pages": len(pages),
-        "chunks": len(chunks), 
-        "source": master_id # Return the clean name
+        "chunks": len(chunks),
+        "source": master_id
     }
 
 # ── 5. CLOUD RETRIEVAL ──
