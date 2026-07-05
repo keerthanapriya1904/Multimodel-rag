@@ -60,12 +60,7 @@ def build_multimodal_context(text_chunks: list,
     return context
 
 # ── Multimodal ask function ────
-def ask_multimodal(
-    question: str,
-    user_id: str ,
-    chat_history: list = None,
-    stream: bool = False
-) -> dict:
+def ask_multimodal(question: str,user_id: str ,chat_history: list = None,stream: bool = False) -> dict:
     """
     Routes question to text + image retrieval.
     Builds combined context and generates answer.

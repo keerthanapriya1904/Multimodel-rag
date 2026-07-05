@@ -214,7 +214,7 @@ def retrieve_images(question: str, user_id: str , n: int = 3) -> list:
         results = client.query_points(
             collection_name=collection_name,
             query=q_vec,
-            filter=models.Filter(
+            query_filter=models.Filter(
                 must=[
                     models.FieldCondition(
                         key="content_type", 
