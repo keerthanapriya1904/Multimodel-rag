@@ -39,7 +39,10 @@ MAX_FILE_SIZE   = 10 * 1024 * 1024   # 10 MB
 ALLOWED_TYPES   = {
     "application/pdf", 
     "text/plain",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "image/jpeg",
+    "image/jpg",
+    "image/png"
 }
 
 # ── JWT Settings ────

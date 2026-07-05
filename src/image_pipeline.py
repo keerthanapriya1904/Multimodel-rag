@@ -29,6 +29,8 @@ def get_image_description(img: Image.Image) -> str:
 
     universal_prompt = (
         "ACT AS A MULTIMODAL DATA EXTRACTION EXPERT. You are looking at a full page of a document. "
+        "You are looking at either a PDF page, a scanned document, a JPG/JPEG image, or a PNG image. "
+        "Extract every piece of useful information while preserving technical accuracy. "
         "Locate any Figures, Architecture Diagrams, Flowcharts, or Tables on this page and convert them "
         "into a high-fidelity text proxy for a retrieval system. Ignore standard body paragraphs.\n\n"
         "STEP 1: CATEGORIZE. Identify if the visual is a Table, Chart, Flowchart, Diagram, or Photo.\n"
@@ -40,6 +42,7 @@ def get_image_description(img: Image.Image) -> str:
         " - IF PHOTO/IMAGE: Describe the subject, any visible text (OCR), and the background context.\n"
         "STEP 3: OCR. Transcribe every single word, number, and label found inside the diagram/image.\n\n"
         "CRITICAL RULE: DO NOT SUMMARIZE. DO NOT OMIT DATA. Provide granular technical detail."
+        "Give the citation only once if the source and page is same "
     )
 
     try:
@@ -155,12 +158,43 @@ def ingest_images(pdf_path: str, user_id: str):
     
     return {"images_stored": processed_count}
 
+def ingest_single_image(image_path: str, user_id: str):
+    """
+    Ingest a standalone JPG/JPEG/PNG image into Qdrant.
+    """
+    from ingestion import get_embed_model
+    print(f"[Vision] Processing image: {image_path}")
+    model = get_embed_model()
+    processed = 0
+    try:
+        with Image.open(image_path) as img:
+            description = get_image_description(img)
+            if description == "failed":
+                return {"images_stored": 0}
+            if description == "quota_hit":
+                return {"images_stored": 0}
+            vector = model.encode(description).tolist()
+            save_to_qdrant([{
+                "text": description,
+                "vector": vector,
+                "source": os.path.basename(image_path),
+                "page": 1,
+                "img_index": 0,
+                "content_type": "image_description"
+            }], user_id)
 
+            processed = 1
+    except Exception as e:
+        print(f" [Ingestion Error] {e}")
+    finally:
+        del model
+        gc.collect()
+
+    return {"images_stored": processed}
 # — 4. RETRIEVAL & SNAPSHOT EXPLANATION (In-Memory Page Render) —
 def retrieve_images(question: str, user_id: str , n: int = 3) -> list:
     """
     SEARCH LOGIC: Finds relevant image descriptions in the Sydney Cloud Vault.
-    Renamed from 'retrieve_and_explain_snapshots' for system alignment.
     """
     from qdrant_client.http import models
     from vector_service import get_qdrant

@@ -46,19 +46,31 @@ async def upload_file(
     
     # 3. TEXT & TABLE Ingestion (Syncs to Sydney)
     
-    text_result = ingest_document(file_path, user_id=current_user.id)
-    
-    # 4. MULTIMODAL Ingestion (Auto-trigger Vision for PDFs)
+    text_result = {"chunks": 0}
     images_stored = 0
+
+# ---------- PDF ----------
     if safe_name.lower().endswith(".pdf"):
+
+        text_result = ingest_document(file_path,user_id=current_user.id)
         try:
             from image_pipeline import ingest_images
-            img_result = ingest_images(file_path, user_id=current_user.id)
+            img_result = ingest_images(file_path,user_id=current_user.id)
             images_stored = img_result.get("images_stored", 0)
         except Exception as e:
-            print(f"  [Vision] Pipeline skipped: {e}")
+            print(f"[Vision] PDF pipeline skipped: {e}")
 
+    elif safe_name.lower().endswith((".docx", ".txt")):
+        text_result = ingest_document(file_path,user_id=current_user.id)
+
+    elif safe_name.lower().endswith((".jpg", ".jpeg", ".png")):
+        from image_pipeline import ingest_image_file
+        
+        img_result = ingest_image_file(file_path,user_id=current_user.id)
+        images_stored = img_result.get("images_stored", 0)
+    
     # 5. ZERO-PERSISTENCE: Shred raw file from disk
+    
     if os.path.exists(file_path):
         os.remove(file_path)
 

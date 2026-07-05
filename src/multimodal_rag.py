@@ -99,9 +99,12 @@ def ask_multimodal(
                         "3. Combine both text and visual context whenever relevant."
                         "4. Never invent information or use outside knowledge."
                         "5. If only part of the answer is available, clearly state what is available."
-                        "6. Cite every factual statement using:[Source: filename, Page N]"
-                        "7. If the answer cannot be found, reply exactly:Not found in the uploaded documents."
-            
+                        "6. Add citations only at the end of a paragraph or bullet when all information comes from the same source."
+                        "7. If multiple consecutive sentences come from the same page, use only ONE citation at the end."
+                        "8. If information comes from different documents or pages, cite each section separately."
+                        "9. Never repeat identical citations after every sentence."
+                        "10. If the answer cannot be found, reply exactly:Not found in the uploaded documents."
+                        "Follow the user's requested output format like Paragraph,Bullet points,Numbered list,Table,Comparison,Summary"
                         f"CONTEXT:\n{context}"
         )
     }]
@@ -115,7 +118,7 @@ def ask_multimodal(
     text_sources  = [{"source": c["source"], "page": c["page"]}
                      for c in text_chunks]
     image_sources = [{"source": i["source"], "page": i["page"],
-                      "path": i["path"]}
+                      }
                      for i in image_results]
 
     if stream:

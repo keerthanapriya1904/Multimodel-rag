@@ -39,10 +39,13 @@ export default function UploadModal({ onClose, onUploaded }) {
     const allowed = [
       "application/pdf",
       "text/plain",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "image/jpg",
+      "image/jpeg",
+      "image/png"
     ]
     if (!allowed.includes(file.type)) {
-      setError("Only PDF, DOCX and TXT files are supported")
+      setError("Only PDF, DOCX , JPG ,JPEG ,PNG and TXT files are supported")
       return
     }
     if (file.size > 10 * 1024 * 1024) {
@@ -89,7 +92,7 @@ export default function UploadModal({ onClose, onUploaded }) {
         
         // Refresh the list after deleting
         loadDocuments(); 
-        alert("Knowledge wiped from cloud!");
+        alert("vectors cleared from cloud!");
     } catch (err) {
         console.error("Delete failed", err);
     }
@@ -186,7 +189,7 @@ export default function UploadModal({ onClose, onUploaded }) {
           <input
             ref={inputRef}
             type="file"
-            accept=".pdf,.docx,.txt"
+            accept=".pdf,.docx,.txt,.jpg,.jpeg,.png"
             className="hidden"
             onChange={handleFileChange}
           />
