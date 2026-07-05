@@ -59,7 +59,7 @@ def build_multimodal_context(text_chunks: list,
 
     return context
 
-# ── Multimodal ask function ───────────────────────────────────
+# ── Multimodal ask function ────
 def ask_multimodal(
     question: str,
     user_id: str ,

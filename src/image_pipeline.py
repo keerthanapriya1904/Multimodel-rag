@@ -213,8 +213,8 @@ def retrieve_images(question: str, user_id: str , n: int = 3) -> list:
         # This ensures we only pull Image Descriptions, not regular text.
         results = client.query_points(
             collection_name=collection_name,
-            query_vector=q_vec,
-            query_filter=models.Filter(
+            query=q_vec,
+            filter=models.Filter(
                 must=[
                     models.FieldCondition(
                         key="content_type", 
@@ -232,7 +232,7 @@ def retrieve_images(question: str, user_id: str , n: int = 3) -> list:
             "page": r.payload["page"],
             "source": r.payload["source"],
             "score": r.score
-        } for r in results]
+        } for r in results.points]
     except Exception as e:
         print(f"  [Vision Search Error] {e}")
         return []

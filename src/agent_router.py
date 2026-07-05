@@ -50,7 +50,8 @@ Q: "What does the architecture diagram show?" → [VISION_ANALYSIS]
 Q: "What happened in AI news today?" → [WEB_SEARCH]
 Q: "Explain Figure 3 in the document" → [VISION_ANALYSIS]
 Q: "What are the key findings?" → [PDF_RETRIEVER]
-Q: "What is the current price of GPT-4?" → [WEB_SEARCH]"""
+Q: "What is the current price of GPT-4?" → [WEB_SEARCH]
+Q: "https://www.google.com/?" → [WEB_SEARCH]  """
 
 def select_tool(question: str) -> str:
     """
