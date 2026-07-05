@@ -106,7 +106,7 @@ def ask_rag(question: str,
         return {"answer": no_docs, "sources": [],
                 "chunks_used": 0, "cache_hit": False}
 
-    # ── Step 3: Build context ────────────────────────────────    
+    # ── Step 3: Build context ─────────    
     context = ""
     sources = []
 
@@ -120,7 +120,7 @@ def ask_rag(question: str,
             "source": chunk["source"],
             "page": chunk["page"]
         })
-    # ── Step 4: Build messages for Groq ─────────────────────
+    # ── Step 4: Build messages for Groq ───────
     system_prompt = (
         "You are a helpful document assistant for DocMind.\n"
         "STRICT RULES:\n"

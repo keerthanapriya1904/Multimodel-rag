@@ -51,7 +51,9 @@ def build_multimodal_context(text_chunks: list,
     # Image context
     if image_results:
         context += "=== IMAGE CONTENT ===\n"
+        MAX_IMAGE_CONTEXT = 1200
         for i, img in enumerate(image_results):
+            description = img["description"][:MAX_IMAGE_CONTEXT]
             context += (f"[Image {i+1}: {img['source']} "
                         f"| Page {img['page']}]\n"
                         f"Description: {img['description']}\n"

@@ -57,6 +57,12 @@ def save_to_qdrant(chunks, user_id):
             wait=True
         )
 
+        client.create_payload_index(
+            collection_name=collection_name,
+            field_name="content_type",
+            field_schema=models.PayloadSchemaType.KEYWORD,
+            wait=True
+        )
         print(f"  [DB] Created new secure vault for: {user_id}")
         print(f"  [DB] Created payload indexes (source ,user_id)")
 
