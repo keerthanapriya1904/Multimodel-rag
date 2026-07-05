@@ -64,9 +64,9 @@ async def upload_file(
         text_result = ingest_document(file_path,user_id=current_user.id)
 
     elif safe_name.lower().endswith((".jpg", ".jpeg", ".png")):
-        from image_pipeline import ingest_image_file
+        from image_pipeline import ingest_single_image
         
-        img_result = ingest_image_file(file_path,user_id=current_user.id)
+        img_result = ingest_single_image(file_path,user_id=current_user.id)
         images_stored = img_result.get("images_stored", 0)
     
     # 5. ZERO-PERSISTENCE: Shred raw file from disk
