@@ -17,7 +17,7 @@ sys.path.append(os.path.dirname(__file__))
 
 # — 1. SETUP VISION AI (Gemini 3.5 Flash) —
 genai.configure(api_key=GEMINI_API_KEY)
-print("GEMINI_API_KEY =", GEMINI_API_KEY)
+
 
 
 vision_model = genai.GenerativeModel(VISION_MODEL) 
@@ -211,7 +211,7 @@ def retrieve_images(question: str, user_id: str , n: int = 3) -> list:
     try:
         # 3. PERFORM THE SEARCH with Metadata Filter
         # This ensures we only pull Image Descriptions, not regular text.
-        results = client.search(
+        results = client.query_points(
             collection_name=collection_name,
             query_vector=q_vec,
             query_filter=models.Filter(
