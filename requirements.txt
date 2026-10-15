@@ -3,6 +3,7 @@ uvicorn==0.49.0
 python-multipart
 slowapi
 sqlalchemy
+psycopg[binary]
 passlib[bcrypt]
 bcrypt
 python-jose[cryptography]
