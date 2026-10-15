@@ -62,7 +62,7 @@ def ask_rag(question: str,
         answer / stream, sources, chunks_used,
         cache_hit (bool)
     """
-    # ── Step 1: Check semantic cache ─────────────────────────
+    # ── Step 1: Check semantic cache ────
     try:
         from semantic_cache import get_cache
         from ingestion import get_embed_model

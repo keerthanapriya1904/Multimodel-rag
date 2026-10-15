@@ -86,7 +86,7 @@ app.include_router(upload_router)
 app.include_router(query_router)
 
 
-# Voice Router (optional safe import)
+# Voice Router 
 
 try:
     from voice_input import router as voice_router

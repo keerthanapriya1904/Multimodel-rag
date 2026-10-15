@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-SECRET_KEY  = os.getenv("JWT_SECRET", "change-this-secret-key-32-chars!!")
+
 ALGORITHM   = "HS256"
 EXPIRE_MINS = 30   # token expires in 30 minutes
 

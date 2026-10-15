@@ -1,5 +1,4 @@
 # src/api/query.py 
-# CHANGES:
 #   1. Expanded sanitization layer (30+ injection patterns)
 #   2. Unicode control character stripping
 #   3. HTML tag stripping before sending to LLM
@@ -26,7 +25,7 @@ from rag           import ask_rag              # ← fallback
 router  = APIRouter(prefix="/query", tags=["Query"])
 limiter = Limiter(key_func=get_remote_address)
 
-# ── ZERO PERSISTENCE POLICY ───────────────────────────────────
+# ── ZERO PERSISTENCE POLICY ───────
 # Chat histories live ONLY in this in-memory dict.
 # They are NEVER written to disk, database, or any file.
 # When the server restarts, all histories are cleared.
@@ -34,7 +33,7 @@ limiter = Limiter(key_func=get_remote_address)
 # If you need persistence, use an encrypted Redis cache.
 chat_histories: dict = {}   # {user_id: [{role, content}, ...]}
 
-# ── Request model ─────────────────────────────────────────────
+# ── Request model ───────────
 class QueryRequest(BaseModel):
     question: str
     stream:   Optional[bool] = False
@@ -45,7 +44,7 @@ class QueryRequest(BaseModel):
             raise ValueError("Question cannot be empty")
         return v.strip()
 
-# ── SANITIZATION LAYER ────────────────────────────────────────
+# ── SANITIZATION LAYER ──
 # 30+ prompt injection and jailbreak patterns
 INJECTION_PATTERNS = [
     # Classic prompt injection
@@ -155,12 +154,12 @@ def sanitize_question(raw: str) -> tuple[str, str | None]:
 
     return text, None
 
-# ── Query endpoint ────────────────────────────────────────────
+# ── Query endpoint ────────────
 @router.post("/")
 @limiter.limit("10/minute")    # max 10 queries per minute per IP
 async def query(request: Request,req: QueryRequest, current_user: User = Depends(get_current_user)):
     
-    # ── Sanitize ─────────────────────────────────────────────
+    # ── Sanitize ────────
     clean_question, error = sanitize_question(req.question)
     if error:
         raise HTTPException(status_code=400, detail=error)
@@ -169,7 +168,7 @@ async def query(request: Request,req: QueryRequest, current_user: User = Depends
     # This dict is process-local — never touches disk
     history = chat_histories.get(current_user.id, [])
 
-    # ── Route via agent orchestrator ─────────────────────────
+    # ── Route via agent orchestrator ───────────
     if req.stream:
         result = agent_orchestrator(
             clean_question,
@@ -213,7 +212,7 @@ async def query(request: Request,req: QueryRequest, current_user: User = Depends
             }
         )
 
-    # ── Non-streaming response ────────────────────────────────
+    # ── Non-streaming response ────────
     result = agent_orchestrator(
         clean_question,
         user_id=current_user.id,
@@ -233,7 +232,7 @@ async def query(request: Request,req: QueryRequest, current_user: User = Depends
         "tool_used":   result.get("tool_used", "PDF_RETRIEVER")
     }
 
-# ── History endpoints ─────────────────────────────────────────
+# ── History endpoints ──────────
 @router.delete("/history")
 def clear_history(current_user: User = Depends(get_current_user)):
     """Clear in-memory chat history for current user"""

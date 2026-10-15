@@ -5,8 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 # FIX 1: Import declarative_base from sqlalchemy.orm (not ext.declarative)
-#         ext.declarative is DEPRECATED in SQLAlchemy 2.0+
-#         Your code used the old location which gives a DeprecationWarning
+#        
 from sqlalchemy import (
     create_engine, Column, String,
     DateTime, Boolean, Index
