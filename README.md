@@ -12,14 +12,6 @@ machine (approximately 4 GB RAM)\
 **Repository:**
 [keerthanapriya1904/Multimodel-rag](https://github.com/keerthanapriya1904/Multimodel-rag)
 
-> **Important:** This README describes the project using the
-> repository's visible structure, dependency manifest, deployment
-> information, and the implementation details documented during
-> development. I could inspect the public repository page and
-> `requirements.txt`, but could not perform a full local checkout in
-> this environment. Verify the exact Python entry point and frontend
-> environment-variable names against the current source before using the
-> commands below.
 
 ## Table of Contents
 
