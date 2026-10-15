@@ -66,7 +66,7 @@ def select_tool(question: str) -> str:
     """
     try:
         response = get_groq().chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model="openai/gpt-oss-20b",
             messages=[
                 {"role": "system",  "content": ROUTER_SYSTEM_PROMPT},
                 {"role": "user",    "content": question}
